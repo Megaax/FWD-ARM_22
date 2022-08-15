@@ -13,13 +13,20 @@
  *  INCLUDES
  *********************************************************************************************************************/
 #include "Std_Types.h"
-#include "IntCrtl.h"
+#include "IntCtrl.h"
 #include "Mcu_Hw.h"
+#include "IntCtrl_Cfg.h"
+#include "ClkCtrl_Cfg.h"
+#include "Platform_Types.h"
 
 /**********************************************************************************************************************
 *  LOCAL MACROS CONSTANT\FUNCTION
 *********************************************************************************************************************/	
-
+uint8 PriArr[110]={1,2,1,3,4,4,0,0,0,7,7,0,2,1,3,4,4,0,0,0,7,7,1,2,1,3,4,4,0,0,0,7,7,0,2,1,3,4,4,0,
+	0,0,7,7,1,2,1,3,4,4,0,0,0,7,7,0,2,1,3,4,4,0,0,0,7,7,1,2,1,3,4,4,0,0,0,7,7,0,2,1,3,4,4,0,0,0,7,7,1,
+	2,1,3,4,4,0,0,0,7,7,0,2,1,3,4,4,0,0,0,7,7};
+	
+uint8 EnInt[180]={1};
 /**********************************************************************************************************************
  *  LOCAL DATA 
  *********************************************************************************************************************/
@@ -39,7 +46,14 @@
 /**********************************************************************************************************************
  *  GLOBAL FUNCTIONS
  *********************************************************************************************************************/
-
+void noth(void)
+{
+	uint8 l;
+for(l=0;l<180;l++)
+{
+	EnInt[l]=1;
+}
+}
 
 /******************************************************************************
 * \Syntax          : void IntCrtl_Init(void)                                      
@@ -55,18 +69,84 @@
 void IntCrtl_Init(void)
 {
 
+	
 	/*TODO Configure Grouping\SubGrouping System in APINT register in SCB*/
-    APINT = 0xFA05|0x00001234;
+	#if  APINT_CONFIG == xxx
+	
+			APINT=0xFA050000;
+			APINT|=(0x4<<7);
+	#elif APINT_CONFIG == xxy
+	
+			APINT=0xFA050000;
+			APINT|=(0x05<<7);	
+
+	#elif APINT_CONFIG == xyy
+	
+			APINT=0xFA050000;
+			APINT|=(0x6<<7);
+	
+	#elif APINT_CONFIG == yyy
+	
+			APINT=0xFA050000;
+			APINT|=(0x7<<7);
+	#endif
     
     /*TODO : Assign Group\Subgroup priority in NVIC_PRIx Nvic and SCB_SYSPRIx Registers*/  
+		
+		uint8 i;
+		sint8 n=-1;
+		uint8 y=0;
+		for(i = 0;i<110;i++)
+		{
+			if(i%4 == 0)
+			{
+				n++; y=0;
+			}
+			NVIC->PRI[n]|=(PriArr[i] << (5+y));
+			y+=8;
+			
+		}
 
 
 	/*TODO : Enable\Disable based on user configurations in NVIC_ENx and SCB_Sys Registers */
 
+		/* EnInt*/
+		noth();
+		for(i=0;i<180;i++)
+		{
+			uint8 n =i/32;
+			uint8 SHIFT=i;
+			if(i>31)
+			{
+				SHIFT-=32;
+			}
+			else if(i>63)
+			{
+				SHIFT-=64;
+			}
+			else if(i>95)
+			{
+				SHIFT-=96;
+			}
+			else if(i>127)
+			{
+				SHIFT-=128;
+			}
+			else if(i>160)
+			{
+				SHIFT-=160;
+			}
+			uint8 e=EnInt[i];
+			NVIC->EN[n]|=EnInt[i]<<SHIFT;
+			
+			
+		}
 
 	
 
 }
+
+
 
 /**********************************************************************************************************************
  *  END OF FILE: IntCrtl.c

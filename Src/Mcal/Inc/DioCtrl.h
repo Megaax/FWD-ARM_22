@@ -2,30 +2,63 @@
 
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
- *         File:  IntCrtl.h
- *       Module:  IntCrtl
+ *         File:  DioCtrl.h
+ *       Module:  DioCtrl_H
  *
  *  Description:  header file for IntCrtl Module    
  *  
  *********************************************************************************************************************/
-#ifndef IntCrtl_H
-#define IntCrtl_H
+#ifndef DioCtrl_H
+#define DioCtrl_H
 
 /**********************************************************************************************************************
  * INCLUDES
  *********************************************************************************************************************/
 #include "Std_Types.h"
-#include "IntCtrl_Cfg.h"
 
 /**********************************************************************************************************************
  *  GLOBAL CONSTANT MACROS
  *********************************************************************************************************************/
+
+#define Lvl_High 1
+#define Lvl_Low 0
+
+typedef uint8 Dio_PortLevelType;
+typedef enum 
+{
+	Dio_LevelLow=0,
+	Dio_LevelHigh,
+	
+}Dio_LevelType;
+
+typedef enum 
+{
+ PIN0, 
+ PIN1  ,
+ PIN2  , 
+ PIN3  , 
+ PIN4  ,
+ PIN5  ,
+ PIN6  ,
+ PIN7 
+}Dio_ChannelType;
+
+typedef enum 
+{
+ PORTA=0x40004000, 
+ PORTB=0x40005000,
+ PORTC=0x40006000, 
+ PORTD=0x40007000, 
+ PORTE=0x40024000,
+ PORTF=0x40025000,
+}Dio_PortType;
 
 
 /**********************************************************************************************************************
  *  GLOBAL FUNCTION MACROS
  *********************************************************************************************************************/
 
+#define PORT PORTF
 
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
@@ -55,10 +88,13 @@
 
 
 
-void IntCrtl_Init(void);
+void Dio_WriteChannel(Dio_ChannelType PIN,Dio_LevelType lEVEL);
+Dio_LevelType Dio_ReadChannel(Dio_ChannelType PIN);
+void Dio_WritePort(Dio_PortType Port,Dio_PortLevelType PortVal);
+Dio_PortLevelType Dio_ReadPort(Dio_PortType Port);
  
-#endif  /* IntCrtl_H */
+ #endif  	/* DioCtrl_H */
 
 /**********************************************************************************************************************
- *  END OF FILE: IntCrtl.h
+ *  END OF FILE: DioCtrl.h
  *********************************************************************************************************************/

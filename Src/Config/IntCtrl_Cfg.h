@@ -20,6 +20,20 @@
  *  GLOBAL CONSTANT MACROS
  *********************************************************************************************************************/
 
+/*
+OPTIONS:
+xxx -> 3-bits for group 0-bit for sub-group
+xxy -> 2-bits for group 1-bit for sub-group
+xyy -> 1-bits for group 2-bit for sub-group
+yyy -> 0-bits for group 3-bit for sub-group
+*/
+#define xxx 0
+#define xxy 1
+#define xyy 2
+#define yyy 3
+
+#define APINT_CONFIG  yyy
+
 
 /**********************************************************************************************************************
  *  GLOBAL FUNCTION MACROS
